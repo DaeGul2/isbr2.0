@@ -1,0 +1,21 @@
+.node:hover {
+    background-color: #e3f2fd; /* 연한 하늘색 파스텔 */
+    transition: background-color 0.3s ease;
+  }
+  
+  .depth1-node {
+    background-color: #ffffff !important;
+  }
+  
+  .no-hover:hover {
+    background-color: inherit !important;
+  }
+  
+  .card {
+    border-radius: 0.5rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  

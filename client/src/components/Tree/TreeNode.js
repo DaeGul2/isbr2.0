@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { TreeContext } from "../../context/TreeContext";
 import { v4 as uuidv4 } from "uuid";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../../styles/TreeNode.css";
 
 // 메모장 노드 컴포넌트
 const MemoNode = ({ node }) => {
@@ -27,7 +28,7 @@ const MemoNode = ({ node }) => {
   };
 
   return (
-    <div className="card shadow-sm mb-4 border-primary" style={{ marginLeft: "15px" }}>
+    <div className="card shadow-sm mb-4 border-primary node">
       <div className="card-body">
         {isEditing ? (
           <>
@@ -101,7 +102,7 @@ const ChecklistNode = ({ node }) => {
   };
 
   return (
-    <div className="card shadow-sm mb-4 border-success" style={{ marginLeft: "15px" }}>
+    <div className="card shadow-sm mb-4 border-success node">
       <div className="card-body">
         <h5 className="card-title text-start">체크리스트</h5>
         <table className="table table-bordered table-sm">
@@ -153,6 +154,7 @@ const ChecklistNode = ({ node }) => {
 // TreeNode 메인 컴포넌트
 const TreeNode = ({ node }) => {
   const { updateTreeData } = useContext(TreeContext);
+  const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(node.title);
 
   const handleAddChild = (type) => {
@@ -205,29 +207,59 @@ const TreeNode = ({ node }) => {
       });
 
     updateTreeData((prev) => updateNodeTitle(prev));
+    setIsEditing(false);
   };
 
   return (
-    <div className="card shadow-sm mb-4" style={{ width: "85%", marginLeft: "auto", marginRight: "auto" }}>
+    <div
+      className={`card shadow-sm mb-4 ${
+        node.depthLevel === 1 ? "no-hover depth1-node" : "node"
+      }`}
+      style={{ marginLeft: node.depthLevel !== 1 ? "15px" : "0" }}
+    >
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <input
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            className="form-control form-control-sm"
-            style={{ width: "60%" }}
-            placeholder="노드 제목"
-          />
+          {isEditing ? (
+            <>
+              <input
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                className="form-control form-control-sm"
+                style={{ width: "60%" }}
+                placeholder="노드 제목"
+              />
+              <button className="btn btn-primary btn-sm" onClick={handleSaveTitle}>
+                저장
+              </button>
+            </>
+          ) : (
+            <h5
+              className="text-start"
+              style={{ cursor: "pointer" }}
+              onClick={() => setIsEditing(true)}
+            >
+              {node.title || "제목 없음"}
+            </h5>
+          )}
           <div className="btn-group">
             {node.type === "depth" && (
               <>
-                <button className="btn btn-outline-secondary btn-sm" onClick={() => handleAddChild("depth")}>
+                <button
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() => handleAddChild("depth")}
+                >
                   + Depth
                 </button>
-                <button className="btn btn-outline-primary btn-sm" onClick={() => handleAddChild("memo")}>
+                <button
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={() => handleAddChild("memo")}
+                >
                   + 메모장
                 </button>
-                <button className="btn btn-outline-success btn-sm" onClick={() => handleAddChild("checklist")}>
+                <button
+                  className="btn btn-outline-success btn-sm"
+                  onClick={() => handleAddChild("checklist")}
+                >
                   + 체크리스트
                 </button>
               </>
